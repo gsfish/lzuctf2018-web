@@ -1,0 +1,33 @@
+version: '2'
+services:
+  # web server
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8085:80"
+    restart: always
+    volumes:
+      # app
+      - ./app:/usr/share/nginx/html
+      # nginx configs
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d/:/etc/nginx/conf.d/:ro
+    depends_on:
+      - fpm
+
+  # flag server
+  flag:
+    build: ./flag
+    restart: always
+    volumes:
+      - ./flag/c4d126233e299bcaa298c323fc900938.txt:/flag.txt:ro
+    depends_on:
+      - fpm
+
+  # php-fpm
+  fpm:
+    build: ./php-fpm
+    restart: always
+    volumes:
+      - ./app:/usr/share/nginx/html
+      - ./php-fpm/php.ini:/usr/local/etc/php/php.ini:ro

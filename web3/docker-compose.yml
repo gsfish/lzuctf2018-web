@@ -1,0 +1,15 @@
+version: '2'
+services:
+  # web server
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8083:80"
+    restart: always
+    volumes:
+      # app
+      - ./app:/usr/share/nginx/html
+      # nginx configs
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d/:/etc/nginx/conf.d/:ro
+  

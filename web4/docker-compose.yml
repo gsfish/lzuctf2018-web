@@ -1,0 +1,25 @@
+version: '2'
+services:
+  # web server
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8084:80"
+    restart: always
+    volumes:
+      # app
+      - ./app/html:/usr/share/nginx/html
+      # nginx configs
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d/:/etc/nginx/conf.d/:ro
+    depends_on:
+      - fpm
+
+  # php-fpm
+  fpm:
+    build: ./php-fpm
+    restart: always
+    volumes:
+      - ./app:/chroot
+      - ./php-fpm/php.ini:/usr/local/etc/php/php.ini:ro
+      - ./php-fpm/chroot.conf:/usr/local/etc/php-fpm.d/chroot.conf:ro
